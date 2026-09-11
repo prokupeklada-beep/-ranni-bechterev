@@ -1,0 +1,30 @@
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111827"><title>Ranní Bechtěrev</title>
+<style>
+body{margin:0;background:#f3f4f6;font-family:system-ui,sans-serif;color:#111827}.app{max-width:520px;margin:auto;min-height:100vh;background:white;padding:22px 18px}.hero{background:#111827;color:white;border-radius:22px;padding:22px}.muted{color:#cbd5e1}.timer{font-size:52px;font-weight:800;margin:8px 0}button{width:100%;padding:15px;margin-top:10px;border:0;border-radius:15px;font-size:17px;font-weight:700}.primary{background:white;color:#111827}.secondary{background:#eee;color:#111827}.card{border:1px solid #e5e7eb;border-radius:22px;padding:20px;margin:14px 0}.exercise{font-size:25px;font-weight:800}.instruction{font-size:18px;line-height:1.45;min-height:80px}.bar{height:8px;background:#111827;width:0;border-radius:8px}.track{height:8px;background:#e5e7eb;border-radius:8px;margin:15px 0}.hidden{display:none}.badge{display:inline-block;background:#e5e7eb;padding:6px 10px;border-radius:20px;font-size:13px}
+</style></head><body><div class="app">
+<h1>Ranní Bechtěrev</h1><p>14 minut • krční páteř • každý den</p>
+<div id="home"><div class="hero"><span class="badge">Dnešní trénink</span><div class="timer">14:00</div><div class="muted">Krční páteř + držení těla</div><button class="primary" onclick="start()">▶ ZAČÍT CVIČIT</button></div>
+<div class="card"><b>Bezpečnost</b><p>Pomalu a jen v příjemném rozsahu. Při ostré bolesti, závrati, brnění nebo jiné neobvyklé potíži cvičení přeruš.</p></div></div>
+<div id="train" class="hidden"><div class="card"><span class="badge" id="step"></span><h2 id="name"></h2><div class="timer" id="time"></div><div class="instruction" id="text"></div><div class="track"><div class="bar" id="bar"></div></div><button class="secondary" onclick="pause()">⏸ Pauza</button><button class="primary" style="background:#111827;color:white" onclick="next()">Další →</button><button class="secondary" onclick="stop()">Ukončit</button></div></div>
+<div id="done" class="hidden"><div class="hero"><h2>✓ Hotovo!</h2><p class="muted">14 minut ranního pohybu máš za sebou.</p><button class="primary" onclick="start()">↻ Zopakovat</button></div></div>
+</div>
+<script>
+const a=[
+["Dýchání a napřímení",120,"Nádech do žeber do stran a dozadu. Při výdechu se lehce vytáhni za temenem vzhůru."],
+["Zasunutí brady",120,"Pohled rovně. Bradu jemně posuň rovně dozadu. Vydrž. A povol. Bez tlačení."],
+["Pomalé rotace krku",120,"Pomalu otoč hlavu doprava jen do příjemného rozsahu. Zpět na střed a doleva. Bez švihu."],
+["Ramena a lopatky",120,"Krouž rameny pomalu dozadu. Potom lopatky lehce stáhni dolů a k sobě."],
+["Hrudní páteř",180,"Na čtyřech pomalu vyhrb záda a vrať se do neutrálu. Pohyb klidný a plynulý."],
+["Kyčle a závěr",180,"Ve stoji s oporou přenes váhu ze strany na stranu. Lehce pokrč kolena. Nakonec se projdi."]
+];
+let n=0,t=0,id=null,p=false;
+function say(x){if(speechSynthesis){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(x);u.lang="cs-CZ";u.rate=.9;speechSynthesis.speak(u)}}
+function f(x){return String(Math.floor(x/60)).padStart(2,"0")+":"+String(x%60).padStart(2,"0")}
+function render(){let e=a[n];step.textContent=(n+1)+" / "+a.length;name.textContent=e[0];time.textContent=f(t);text.textContent=e[2];bar.style.width=((1-t/e[1])*100)+"%"}
+function start(){home.classList.add("hidden");done.classList.add("hidden");train.classList.remove("hidden");n=0;t=a[0][1];p=false;render();say("Dobré ráno. Máme čtrnáct minut. Začneme dýcháním a napřímením.");clearInterval(id);id=setInterval(tick,1000)}
+function tick(){if(p)return;t--;render();if(t<=0){if(n<a.length-1){n++;t=a[n][1];render();say("Další cvik: "+a[n][0]+". "+a[n][2])}else finish()}}
+function next(){if(n<a.length-1){n++;t=a[n][1];render();say("Další cvik: "+a[n][0]+". "+a[n][2])}}
+function pause(){p=!p;say(p?"Pauza.":"Pokračujeme.")}
+function stop(){clearInterval(id);speechSynthesis.cancel();train.classList.add("hidden");home.classList.remove("hidden")}
+function finish(){clearInterval(id);train.classList.add("hidden");done.classList.remove("hidden");say("Hotovo. Čtrnáct minut ranního pohybu máš za sebou. Výborná práce.")}
+</script></body></html>
