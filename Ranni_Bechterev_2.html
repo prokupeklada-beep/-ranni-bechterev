@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827"><title>Ranní Bechtěrev 2.0</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f4f6;font-family:system-ui,-apple-system,sans-serif;color:#111827}
+.app{max-width:540px;margin:auto;min-height:100vh;background:#fff;padding:22px 18px 36px}
+h1{margin:0}.sub{color:#6b7280;margin:5px 0 20px}.card{border:1px solid #e5e7eb;border-radius:22px;padding:20px;margin:14px 0}
+.hero{background:#111827;color:#fff}.muted{color:#cbd5e1}.timer{font-size:54px;font-weight:800;margin:7px 0}
+.exercise{font-size:25px;font-weight:800;margin:8px 0}.instruction{font-size:18px;line-height:1.45;min-height:105px}
+.badge{display:inline-block;background:#e5e7eb;color:#111827;border-radius:999px;padding:6px 10px;font-size:13px}
+button{width:100%;border:0;border-radius:16px;padding:15px;margin-top:10px;font-size:17px;font-weight:750}
+.primary{background:#fff}.dark{background:#111827;color:#fff}.secondary{background:#f3f4f6}.row{display:flex;gap:10px}.row button{flex:1}
+.track{height:9px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin:16px 0}.bar{height:100%;background:#111827;width:0}
+.hidden{display:none}.small{font-size:13px;color:#6b7280;line-height:1.45}.cue{font-size:21px;font-weight:750;min-height:60px}
+</style></head><body><div class="app">
+<h1>Ranní Bechtěrev 2.0</h1><div class="sub">7:15 • 14 minut • krční páteř + napřímení</div>
+<section id="home"><div class="card hero"><span class="badge">Dnešní trénink</span><div class="timer">14:00</div>
+<div class="muted">Hlasový cvičitel tě povede celou sestavou.</div><button class="primary" onclick="start()">▶ ZAČÍT CVIČIT</button></div>
+<div class="card"><b>🔊 Hlas cvičitele</b><button id="voiceBtn" class="secondary" onclick="toggleVoice()">Hlas: ZAPNUTÝ</button></div>
+<div class="card"><b>Bezpečnost</b><p class="small">Cvič pomalu a jen v příjemném rozsahu. Žádné prudké rotace ani kroužení hlavou. Při ostré bolesti, závrati, novém brnění, slabosti nebo jiné neobvyklé potíži cvičení přeruš.</p></div></section>
+<section id="training" class="hidden"><div class="card"><span class="badge" id="stepBadge"></span><div class="exercise" id="name"></div>
+<div class="timer" id="clock"></div><div class="instruction" id="instruction"></div><div class="cue" id="cue"></div>
+<div class="track"><div class="bar" id="bar"></div></div><div class="row"><button class="secondary" onclick="pause()">⏸ Pauza</button><button class="dark" onclick="next()">Další →</button></div>
+<button class="secondary" onclick="stop()">Ukončit</button></div></section>
+<section id="done" class="hidden"><div class="card hero"><h2>✓ Hotovo!</h2><p class="muted">14 minut ranního pohybu máš za sebou.</p><button class="primary" onclick="start()">↻ Zopakovat</button></div></section>
+</div><script>
+const E=[
+["Dýchání do žeber",60,"Nádech nosem do žeber do stran a dozadu. Výdech. Vytáhni se za temenem.",[[5,"Narovnej se. Ramena volně dolů."],[12,"Nádech nosem… do žeber."],[22,"Pomalý výdech."],[34,"Znovu nádech… bez zvedání ramen."],[46,"Výdech. Temeno vzhůru."],[55,"Poslední klidný dech."]]],
+["Napřímení a lopatky",120,"Lopatky lehce dolů a k sobě. Vydrž 3 sekundy, povol. 8 opakování.",[[5,"Lopatky k sobě… tři, dva, jedna… povol."],[20,"Podruhé. Ramena dole."],[35,"Tři. Klidně dýchej."],[50,"Čtyři. Neprohýbej bedra."],[65,"Pět."],[80,"Šest… tři, dva, jedna."],[95,"Sedm."],[108,"Osmé a poslední. Povol."]]],
+["Zasunutí brady",120,"Pohled rovně. Bradu jemně posuň rovně dozadu, ne dolů. 8× s výdrží 3 sekundy.",[[5,"Bradu jemně dozadu… tři, dva, jedna… povol."],[20,"Podruhé. Bez záklonu."],[35,"Tři. Jen příjemný rozsah."],[50,"Čtyři."],[65,"Pět. Ramena volná."],[80,"Šest."],[95,"Sedm. Bez tlačení."],[108,"Osmé… tři, dva, jedna… povol."]]],
+["Pomalé rotace krku",120,"Pomalu doprava, střed, doleva. Jen do příjemného rozsahu. Bez švihu.",[[5,"Pomalu doprava… zpět na střed."],[20,"Doleva… a zpět."],[35,"Doprava. Nehledej maximum."],[50,"Doleva. Ramena rovně."],[68,"Další pomalá dvojice."],[88,"Bez švihu a bez tlačení."],[105,"Ještě jednou na každou stranu."]]],
+["Úklony krku",60,"Ucho lehce směrem k rameni. Rameno nezvedej. 5× na každou stranu.",[[5,"Lehce doprava… zpět."],[16,"Lehce doleva… zpět."],[28,"Znovu doprava."],[39,"Doleva. Rameno zůstává dole."],[51,"Poslední pomalá dvojice."]]],
+["Ramena a lopatky",120,"10 pomalých kroužků ramen dozadu, potom 8× lopatky dolů a k sobě.",[[5,"Krouž rameny pomalu dozadu."],[28,"Pokračuj. Hrudník otevřený."],[55,"Teď lopatky dolů a lehce k sobě."],[75,"Povol… a znovu."],[96,"Ještě dvě opakování."],[112,"Povol ramena."]]],
+["Hrudní páteř",120,"Na čtyřech: výdech – lehce vyhrb. Nádech – návrat do neutrálu. 8×.",[[5,"Výdech… lehce vyhrb."],[20,"Nádech… vrať se do neutrálu."],[36,"Znovu pomalu."],[55,"Nejde o maximální rozsah."],[75,"Krk nech uvolněný."],[96,"Ještě dvě pomalá opakování."],[112,"Vrať se do neutrálu."]]],
+["Rotace hrudníku",60,"Ruka za hlavou. Loket pomalu otevři vzhůru. Pohyb vede hrudník, ne krk.",[[5,"Otevři loket pomalu vzhůru… zpět."],[20,"Ještě jednou. Krk nepáč."],[30,"Vyměň stranu."],[43,"Pomalu otevři… a zpět."],[53,"Poslední klidné opakování."]]],
+["Kyčle, chůze a závěr",60,"Přenášej váhu ze strany na stranu, potom se projdi a zakonči třemi dechy.",[[5,"Přenášej váhu ze strany na stranu."],[20,"Kolena lehce povolená."],[30,"Teď se pomalu projdi."],[45,"Zastav. Temeno vzhůru, ramena dolů."],[52,"Tři klidné nádechy a výdechy."]]]
+];
+let idx=0,remaining=0,timer=null,paused=false,voiceOn=true,spoken=new Set();
+function say(x){if(!voiceOn||!("speechSynthesis" in window))return;let u=new SpeechSynthesisUtterance(x);u.lang="cs-CZ";u.rate=.86;u.pitch=.82;let v=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith("cs"));if(v.length)u.voice=v[0];speechSynthesis.speak(u)}
+function toggleVoice(){voiceOn=!voiceOn;voiceBtn.textContent="Hlas: "+(voiceOn?"ZAPNUTÝ":"VYPNUTÝ");if(!voiceOn)speechSynthesis.cancel()}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function render(){let e=E[idx],el=e[1]-remaining;stepBadge.textContent=(idx+1)+" / "+E.length;name.textContent=e[0];clock.textContent=fmt(remaining);instruction.textContent=e[2];bar.style.width=(el/e[1]*100)+"%"}
+function cues(){let e=E[idx],el=e[1]-remaining;for(let j=0;j<e[3].length;j++){let k=idx+"-"+j;if(el>=e[3][j][0]&&!spoken.has(k)){spoken.add(k);cue.textContent=e[3][j][1];say(e[3][j][1]);break}}}
+function start(){home.classList.add("hidden");done.classList.add("hidden");training.classList.remove("hidden");idx=0;remaining=E[0][1];paused=false;spoken.clear();cue.textContent="Připrav se…";render();speechSynthesis.cancel();say("Dobré ráno. Máme čtrnáct minut. Cvičíme pomalu a bez bolesti. Začneme dýcháním.");clearInterval(timer);timer=setInterval(tick,1000)}
+function tick(){if(paused)return;remaining--;render();cues();if(remaining<=0){if(idx<E.length-1){idx++;remaining=E[idx][1];cue.textContent="Další: "+E[idx][0];render();say("Další cvik. "+E[idx][0]+". "+E[idx][2])}else finish()}}
+function pause(){paused=!paused;if(paused){speechSynthesis.cancel();cue.textContent="Pauza"}else{cue.textContent="Pokračujeme";say("Pokračujeme.")}}
+function next(){speechSynthesis.cancel();if(idx<E.length-1){idx++;remaining=E[idx][1];cue.textContent="Další: "+E[idx][0];render();say("Další cvik. "+E[idx][0]+". "+E[idx][2])}else finish()}
+function stop(){clearInterval(timer);speechSynthesis.cancel();training.classList.add("hidden");home.classList.remove("hidden")}
+function finish(){clearInterval(timer);speechSynthesis.cancel();training.classList.add("hidden");done.classList.remove("hidden");say("Hotovo. Čtrnáct minut ranního pohybu máš za sebou. Výborná práce.")}
+</script></body></html>
