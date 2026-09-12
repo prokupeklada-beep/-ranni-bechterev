@@ -1,0 +1,1117 @@
+<!doctype html>
+
+<html lang="cs">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<meta name="theme-color" content="#123c63">
+
+<title>Ranní Bechtěrev 3.0</title>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{
+
+  margin:0;
+
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+
+  background:#eef4f7;
+
+  color:#18324a
+
+}
+
+.app{
+
+  max-width:560px;
+
+  margin:auto;
+
+  min-height:100vh;
+
+  background:white;
+
+  padding:18px 15px 35px
+
+}
+
+h1{margin:0;color:#123c63;font-size:30px}
+
+.sub{color:#667b8d;margin:5px 0 16px}
+
+.card{
+
+  border:1px solid #dce6ed;
+
+  border-radius:22px;
+
+  padding:17px;
+
+  margin:13px 0;
+
+  box-shadow:0 4px 18px rgba(0,0,0,.04)
+
+}
+
+.hero{background:#123c63;color:white}
+
+.badge{
+
+  display:inline-block;
+
+  padding:6px 10px;
+
+  border-radius:999px;
+
+  background:#e7f3fb;
+
+  color:#123c63;
+
+  font-size:13px;
+
+  font-weight:800
+
+}
+
+.timer{
+
+  font-size:54px;
+
+  font-weight:850;
+
+  letter-spacing:-2px;
+
+  margin:6px 0
+
+}
+
+.exercise{
+
+  font-size:27px;
+
+  font-weight:850;
+
+  color:#123c63;
+
+  margin:8px 0
+
+}
+
+.visual{
+
+  background:#f6fafc;
+
+  border:1px solid #d9e5ec;
+
+  border-radius:20px;
+
+  padding:8px;
+
+  margin:12px 0
+
+}
+
+.visual svg{
+
+  display:block;
+
+  width:100%;
+
+  height:auto
+
+}
+
+.instruction{
+
+  font-size:18px;
+
+  line-height:1.45;
+
+  min-height:76px
+
+}
+
+.cue{
+
+  color:#123c63;
+
+  font-size:19px;
+
+  font-weight:800;
+
+  min-height:48px;
+
+  margin-top:8px
+
+}
+
+.track{
+
+  height:10px;
+
+  background:#e4edf2;
+
+  border-radius:30px;
+
+  overflow:hidden;
+
+  margin:15px 0
+
+}
+
+.bar{
+
+  height:100%;
+
+  background:#3187b8;
+
+  width:0
+
+}
+
+button{
+
+  width:100%;
+
+  border:0;
+
+  border-radius:15px;
+
+  padding:14px 8px;
+
+  margin-top:9px;
+
+  font-size:16px;
+
+  font-weight:800
+
+}
+
+.primary{background:white;color:#123c63}
+
+.dark{background:#123c63;color:white}
+
+.secondary{background:#edf3f6;color:#123c63}
+
+.row{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr 1fr;
+
+  gap:8px
+
+}
+
+.small{
+
+  font-size:13px;
+
+  line-height:1.45;
+
+  color:#667b8d
+
+}
+
+.hidden{display:none}
+
+select{
+
+  width:100%;
+
+  padding:12px;
+
+  margin-top:10px;
+
+  font-size:16px;
+
+  border:1px solid #cbd9e2;
+
+  border-radius:12px;
+
+  background:white
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+<h1>Ranní Bechtěrev 3.0</h1>
+
+<div class="sub">10 cviků × 40 s • 6:40 • hlasové vedení</div>
+
+<section id="home">
+
+<div class="card hero">
+
+  <span class="badge">Dnešní sestava</span>
+
+  <div class="timer">06:40</div>
+
+  <div>Jemná ranní mobilita a napřímení.</div>
+
+  <button class="primary" onclick="start()">▶ ZAČÍT CVIČIT</button>
+
+</div>
+
+<div class="card">
+
+  <b>🔊 Hlas cvičitele</b>
+
+  <select id="voiceSelect">
+
+    <option value="">Automaticky – čeština</option>
+
+  </select>
+
+  <button id="voiceBtn" class="secondary" onclick="toggleVoice()">
+
+    Hlas: ZAPNUTÝ
+
+  </button>
+
+</div>
+
+<div class="card">
+
+  <b>Bezpečnost</b>
+
+  <p class="small">
+
+    Cvič pomalu a jen v příjemném rozsahu. Krk nepáč a hlavu
+
+    netlač násilím dozadu. Při ostré bolesti, závrati, novém
+
+    brnění nebo slabosti cvičení přeruš.
+
+  </p>
+
+</div>
+
+</section>
+
+<section id="training" class="hidden">
+
+<div class="card">
+
+<span class="badge" id="stepBadge"></span>
+
+<div class="exercise" id="name"></div>
+
+<div class="timer" id="clock">00:40</div>
+
+<div class="visual" id="visual"></div>
+
+<div class="instruction" id="instruction"></div>
+
+<div class="cue" id="cue"></div>
+
+<div class="track">
+
+  <div class="bar" id="bar"></div>
+
+</div>
+
+<div class="row">
+
+  <button class="secondary" onclick="prev()">← Zpět</button>
+
+  <button class="secondary" onclick="repeatExercise()">🔁 Zopakovat</button>
+
+  <button class="dark" onclick="next()">Další →</button>
+
+</div>
+
+<button class="secondary" onclick="pause()">⏸ Pauza</button>
+
+<button class="secondary" onclick="stop()">Ukončit</button>
+
+</div>
+
+</section>
+
+<section id="done" class="hidden">
+
+<div class="card hero">
+
+  <h2>✓ Hotovo</h2>
+
+  <p>Deset cviků máš za sebou.</p>
+
+  <button class="primary" onclick="start()">↻ Zopakovat sestavu</button>
+
+</div>
+
+</section>
+
+</div>
+
+<script>
+
+const body = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<circle cx="180" cy="48" r="22" fill="#d8b39a"/>
+
+<path d="M180 71 L180 145" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M180 88 L138 126" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 88 L222 126" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 144 L150 203" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M180 144 L210 203" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+</svg>`;
+
+const chin = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<path d="M165 66 L165 155" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<circle cx="172" cy="45" r="23" fill="#d8b39a"/>
+
+<path d="M185 45 L230 45" stroke="#d9514e" stroke-width="7" stroke-linecap="round"/>
+
+<path d="M207 31 L230 45 L207 59" fill="none" stroke="#d9514e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+
+<path d="M165 150 L145 207" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M165 150 L195 207" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M165 92 L126 130" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M165 92 L204 130" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<text x="180" y="218" text-anchor="middle" font-size="15" fill="#516c7d">brada jemně dozadu, bez záklonu</text>
+
+</svg>`;
+
+const tall = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<circle cx="180" cy="55" r="22" fill="#d8b39a"/>
+
+<path d="M180 78 L180 155" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M180 92 L140 128" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 92 L220 128" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 150 L150 207" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M180 150 L210 207" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M180 32 L180 8" stroke="#d9514e" stroke-width="7" stroke-linecap="round"/>
+
+<path d="M166 22 L180 7 L194 22" fill="none" stroke="#d9514e" stroke-width="7" stroke-linecap="round"/>
+
+<text x="180" y="222" text-anchor="middle" font-size="15" fill="#516c7d">vytáhni temeno vzhůru</text>
+
+</svg>`;
+
+const scapula = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<circle cx="180" cy="48" r="22" fill="#d8b39a"/>
+
+<path d="M180 72 L180 155" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M180 92 L132 124" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 92 L228 124" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 151 L150 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M180 151 L210 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M120 103 L158 103" stroke="#d9514e" stroke-width="7" stroke-linecap="round"/>
+
+<path d="M240 103 L202 103" stroke="#d9514e" stroke-width="7" stroke-linecap="round"/>
+
+<path d="M144 91 L158 103 L144 115" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M216 91 L202 103 L216 115" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<text x="180" y="222" text-anchor="middle" font-size="15" fill="#516c7d">lopatky k sobě a dolů</text>
+
+</svg>`;
+
+const chest = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<circle cx="180" cy="48" r="22" fill="#d8b39a"/>
+
+<path d="M180 72 L180 155" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M180 92 L105 92" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 92 L255 92" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 151 L150 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M180 151 L210 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M145 130 Q180 105 215 130" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M138 113 L145 130 L162 126" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M222 113 L215 130 L198 126" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<text x="180" y="222" text-anchor="middle" font-size="15" fill="#516c7d">otevři hrudník, ramena volně</text>
+
+</svg>`;
+
+const extend = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<path d="M118 165 L250 165" stroke="#8198a6" stroke-width="9"/>
+
+<circle cx="180" cy="65" r="22" fill="#d8b39a"/>
+
+<path d="M180 89 Q185 125 205 150" fill="none" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M180 101 L140 130" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 101 L220 130" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M195 150 L165 205" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M195 150 L225 205" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M207 100 Q237 76 224 48" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M211 56 L224 47 L232 62" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<text x="180" y="222" text-anchor="middle" font-size="15" fill="#516c7d">jemné napřímení hrudní páteře</text>
+
+</svg>`;
+
+const rotate = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<circle cx="180" cy="48" r="22" fill="#d8b39a"/>
+
+<path d="M180 72 L180 155" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M180 94 L138 125" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 94 L228 112" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 151 L150 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M180 151 L210 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M126 86 Q180 55 234 86" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M220 70 L235 86 L217 94" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<text x="180" y="222" text-anchor="middle" font-size="15" fill="#516c7d">otáčí se hlavně hrudník</text>
+
+</svg>`;
+
+const allfours = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<circle cx="244" cy="88" r="20" fill="#d8b39a"/>
+
+<path d="M218 102 Q180 82 128 106" fill="none" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M134 108 L110 176" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M207 109 L226 176" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M125 108 L78 176" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M210 110 L270 176" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M154 73 Q180 49 207 73" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M195 59 L208 73 L190 80" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<text x="180" y="214" text-anchor="middle" font-size="15" fill="#516c7d">pohyb hrudní páteře, krk volný</text>
+
+</svg>`;
+
+const hip = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<circle cx="170" cy="48" r="22" fill="#d8b39a"/>
+
+<path d="M170 72 L170 142" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M170 92 L138 127" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M170 92 L202 127" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M170 140 L112 186" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M170 140 L238 181" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M214 140 L245 140" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M232 128 L246 140 L232 152" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<text x="180" y="218" text-anchor="middle" font-size="15" fill="#516c7d">pánev jemně vpřed</text>
+
+</svg>`;
+
+const wall = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<path d="M112 22 L112 210" stroke="#9aacb7" stroke-width="8"/>
+
+<circle cx="165" cy="52" r="22" fill="#d8b39a"/>
+
+<path d="M155 75 L145 155" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M151 92 L125 128" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M151 92 L186 125" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M145 150 L125 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M145 150 L170 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M204 52 L174 52" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M187 40 L173 52 L187 64" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<text x="225" y="91" font-size="14" fill="#516c7d">bez tlačení</text>
+
+<text x="225" y="110" font-size="14" fill="#516c7d">hlavy ke stěně</text>
+
+</svg>`;
+
+const ribs = `
+
+<svg viewBox="0 0 360 230">
+
+<rect width="360" height="230" rx="18" fill="#f6fafc"/>
+
+<circle cx="180" cy="48" r="22" fill="#d8b39a"/>
+
+<path d="M180 72 L180 155" stroke="#245879" stroke-width="15" stroke-linecap="round"/>
+
+<path d="M180 90 L142 118" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 90 L218 118" stroke="#245879" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M180 151 L150 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M180 151 L210 208" stroke="#263c4c" stroke-width="13" stroke-linecap="round"/>
+
+<path d="M155 112 L125 112" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M205 112 L235 112" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M137 100 L124 112 L137 124" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<path d="M223 100 L236 112 L223 124" fill="none" stroke="#d9514e" stroke-width="7"/>
+
+<text x="180" y="222" text-anchor="middle" font-size="15" fill="#516c7d">nádech do stran žeber</text>
+
+</svg>`;
+
+const E = [
+
+{
+
+name:"Dýchání do žeber",
+
+instruction:"Polož ruce na spodní žebra. Nadechuj se do stran a dozadu. Výdech nech klidný a dlouhý.",
+
+cues:["Nádech do stran žeber.","Dlouhý klidný výdech."],
+
+visual:ribs
+
+},
+
+{
+
+name:"Jemné zasunutí brady",
+
+instruction:"Dívej se rovně. Bradu jemně posuň dozadu, jako bys dělal malou dvojitou bradu. Nezakláněj hlavu.",
+
+cues:["Jemně dozadu a povol.","Krk zůstává dlouhý."],
+
+visual:chin
+
+},
+
+{
+
+name:"Růst za temenem",
+
+instruction:"Vytáhni se za temenem vzhůru. Ramena nech volná. Nezvedej bradu.",
+
+cues:["Temeno vzhůru.","Ramena dolů a volně."],
+
+visual:tall
+
+},
+
+{
+
+name:"Lopatky dolů a k sobě",
+
+instruction:"Jemně stáhni lopatky k sobě a trochu dolů. Neprohýbej bedra.",
+
+cues:["Lopatky k sobě.","Ramena nezvedej."],
+
+visual:scapula
+
+},
+
+{
+
+name:"Otevření hrudníku",
+
+instruction:"Otevři paže do stran a s nádechem jemně rozšiř hrudník. Pohyb je pomalý.",
+
+cues:["Nádech a otevři hrudník.","Výdech a povol."],
+
+visual:chest
+
+},
+
+{
+
+name:"Napřímení hrudní páteře",
+
+instruction:"Jemně se napřim v hrudní páteři. Pohyb nevytvářej záklonem krku.",
+
+cues:["Hrudník jemně vzhůru.","Krk nech volný."],
+
+visual:extend
+
+},
+
+{
+
+name:"Rotace hrudní páteře",
+
+instruction:"Pomalu otoč hrudník do strany. Pánev zůstává klidná. Krk nepáč.",
+
+cues:["Otáčí se hlavně hrudník.","Jen příjemný rozsah."],
+
+visual:rotate
+
+},
+
+{
+
+name:"Hrudní páteř na čtyřech",
+
+instruction:"Na všech čtyřech jemně pohybuj hrudní páteří. Krk nech uvolněný a bez násilí.",
+
+cues:["Pohyb vychází z hrudníku.","Krk zůstává volný."],
+
+visual:allfours
+
+},
+
+{
+
+name:"Přední strana kyčlí",
+
+instruction:"V krátkém výpadu jemně posuň pánev vpřed. Trup drž vzpřímeně a bedra nepřehýbej.",
+
+cues:["Jemný tah před kyčlí.","Neprohýbej bedra."],
+
+visual:hip
+
+},
+
+{
+
+name:"Napřímení u stěny",
+
+instruction:"Postav se ke stěně a jemně se vytáhni vzhůru. Hlavu ke stěně netlač. Sleduj jen přirozené napřímení.",
+
+cues:["Temeno vzhůru.","Bez tlačení hlavy dozadu."],
+
+visual:wall
+
+}
+
+];
+
+let idx=0;
+
+let remaining=40;
+
+let timer=null;
+
+let paused=false;
+
+let voiceOn=true;
+
+let spoken=new Set();
+
+function loadVoices(){
+
+ if(!("speechSynthesis" in window)) return;
+
+ const vs=speechSynthesis.getVoices()
+
+   .filter(v=>v.lang && v.lang.toLowerCase().startsWith("cs"));
+
+ voiceSelect.innerHTML='<option value="">Automaticky – čeština</option>';
+
+ vs.forEach(v=>{
+
+   const o=document.createElement("option");
+
+   o.value=v.name;
+
+   o.textContent=v.name;
+
+   voiceSelect.appendChild(o);
+
+ });
+
+}
+
+if("speechSynthesis" in window){
+
+ loadVoices();
+
+ speechSynthesis.onvoiceschanged=loadVoices;
+
+}
+
+function say(text){
+
+ if(!voiceOn || !("speechSynthesis" in window)) return;
+
+ speechSynthesis.cancel();
+
+ const u=new SpeechSynthesisUtterance(text);
+
+ u.lang="cs-CZ";
+
+ u.rate=.82;
+
+ u.pitch=.96;
+
+ const vs=speechSynthesis.getVoices()
+
+ .filter(v=>v.lang && v.lang.toLowerCase().startsWith("cs"));
+
+ const selected=vs.find(v=>v.name===voiceSelect.value) || vs[0];
+
+ if(selected) u.voice=selected;
+
+ speechSynthesis.speak(u);
+
+}
+
+function toggleVoice(){
+
+ voiceOn=!voiceOn;
+
+ voiceBtn.textContent="Hlas: "+(voiceOn ? "ZAPNUTÝ":"VYPNUTÝ");
+
+ if(!voiceOn && "speechSynthesis" in window){
+
+   speechSynthesis.cancel();
+
+ }
+
+}
+
+function fmt(s){
+
+ return "00:"+String(s).padStart(2,"0");
+
+}
+
+function render(){
+
+ const e=E[idx];
+
+ stepBadge.textContent=(idx+1)+" / "+E.length;
+
+ name.textContent=e.name;
+
+ clock.textContent=fmt(remaining);
+
+ instruction.textContent=e.instruction;
+
+ visual.innerHTML=e.visual;
+
+ bar.style.width=((40-remaining)/40*100)+"%";
+
+}
+
+function start(){
+
+ home.classList.add("hidden");
+
+ done.classList.add("hidden");
+
+ training.classList.remove("hidden");
+
+ idx=0;
+
+ remaining=40;
+
+ paused=false;
+
+ spoken.clear();
+
+ cue.textContent="Připrav se…";
+
+ render();
+
+ say("Dobré ráno. Čeká tě deset cviků po čtyřiceti sekundách. Cvič pomalu a bez bolesti.");
+
+ clearInterval(timer);
+
+ timer=setInterval(tick,1000);
+
+}
+
+function tick(){
+
+ if(paused) return;
+
+ remaining--;
+
+ render();
+
+ const elapsed=40-remaining;
+
+ const e=E[idx];
+
+ if(elapsed>=10 && !spoken.has("a")){
+
+   spoken.add("a");
+
+   cue.textContent=e.cues[0];
+
+   say(e.cues[0]);
+
+ }
+
+ else if(elapsed>=24 && !spoken.has("b")){
+
+   spoken.add("b");
+
+   cue.textContent=e.cues[1];
+
+   say(e.cues[1]);
+
+ }
+
+ else if(elapsed>=35 && !spoken.has("c")){
+
+   spoken.add("c");
+
+   cue.textContent="Pět, čtyři, tři, dva, jedna.";
+
+   say("Pět. Čtyři. Tři. Dva. Jedna.");
+
+ }
+
+ if(remaining<=0){
+
+   if(idx<E.length-1){
+
+     idx++;
+
+     remaining=40;
+
+     spoken.clear();
+
+     cue.textContent="Další: "+E[idx].name;
+
+     render();
+
+     say("Další cvik. "+E[idx].name+". "+E[idx].instruction);
+
+   }
+
+   else{
+
+     finish();
+
+   }
+
+ }
+
+}
+
+function pause(){
+
+ paused=!paused;
+
+ if(paused){
+
+   if("speechSynthesis" in window) speechSynthesis.cancel();
+
+   cue.textContent="Pauza";
+
+ }
+
+ else{
+
+   cue.textContent="Pokračujeme";
+
+   say("Pokračujeme.");
+
+ }
+
+}
+
+function next(){
+
+ if("speechSynthesis" in window) speechSynthesis.cancel();
+
+ if(idx<E.length-1){
+
+   idx++;
+
+   remaining=40;
+
+   paused=false;
+
+   spoken.clear();
+
+   cue.textContent="Další: "+E[idx].name;
+
+   render();
+
+   say("Další cvik. "+E[idx].name+". "+E[idx].instruction);
+
+ }
+
+ else{
+
+   finish();
+
+ }
+
+}
+
+function prev(){
+
+ if("speechSynthesis" in window) speechSynthesis.cancel();
+
+ if(idx>0) idx--;
+
+ remaining=40;
+
+ paused=false;
+
+ spoken.clear();
+
+ cue.textContent="Zpět: "+E[idx].name;
+
+ render();
+
+ say("Vracíme se. "+E[idx].name+". "+E[idx].instruction);
+
+}
+
+function repeatExercise(){
+
+ if("speechSynthesis" in window) speechSynthesis.cancel();
+
+ remaining=40;
+
+ paused=false;
+
+ spoken.clear();
+
+ cue.textContent="Opakujeme: "+E[idx].name;
+
+ render();
+
+ say("Zopakujeme cvik. "+E[idx].name+". "+E[idx].instruction);
+
+}
+
+function stop(){
+
+ clearInterval(timer);
+
+ if("speechSynthesis" in window){
+
+   speechSynthesis.cancel();
+
+ }
+
+ training.classList.add("hidden");
+
+ home.classList.remove("hidden");
+
+}
+
+function finish(){
+
+ clearInterval(timer);
+
+ if("speechSynthesis" in window){
+
+   speechSynthesis.cancel();
+
+ }
+
+ training.classList.add("hidden");
+
+ done.classList.remove("hidden");
+
+ say("Hotovo. Deset cviků máš za sebou.");
+
+}
+
+</script>
+
+</body>
+
+</html>
